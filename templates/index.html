@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI Forecast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://example.com/background.jpg'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .forecast-table {
+            margin-top: 20px;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            form, .forecast-table {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>AQI Forecast for {{ city }}</h1>
+    <form method="POST">
+        <label for="city">Enter City:</label>
+        <input type="text" id="city" name="city" list="city-list" placeholder="E.g., Bangalore" required>
+        <datalist id="city-list"></datalist>
+        <button type="submit">Get Forecast</button>
+    </form>
+
+    {% if forecast_data %}
+        <div class="forecast-table">
+            <h2>Forecasted AQI Values and Categories for the next 7 days:</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Forecasted AQI</th>
+                    <th>Forecasted Category</th>
+                </tr>
+                {% for row in forecast_data %}
+                <tr>
+                    <td>{{ row['date'].strftime('%Y-%m-%d') }}</td>
+                    <td>{{ row['forecasted_aqi'] }}</td>
+                    <td>{{ row['forecasted_category'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    {% if error_message %}
+        <p style="color: red; margin-top: 20px;">{{ error_message }}</p>
+    {% endif %}
+
+    <script>
+        // JavaScript for autocomplete functionality
+        const inputCity = document.getElementById('city');
+        const cityList = document.getElementById('city-list');
+
+        const cities = ['Bangalore', 'Yelahanka', 'Bommanahalli', 'Peenya', 'Whitefield'];
+
+        inputCity.addEventListener('input', () => {
+            const inputValue = inputCity.value.trim().toLowerCase();
+            cityList.innerHTML = '';
+
+            if (inputValue) {
+                const filteredCities = cities.filter(city => city.toLowerCase().includes(inputValue));
+                filteredCities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    cityList.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
